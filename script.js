@@ -10,8 +10,8 @@
  * 4. Nella sezione dei dettagli, mostra TUTTE le info del prodotto e un pulsante "Chiudi" per nascondere la sezione
  * 
  * Suggerimenti per l'implementazione:
- * - Crea una funzione che genera una riga di un singolo prodotto
- * - Crea una funzione che visualizza l'intera tabella dei prodotti (che richiama la funzione precedente per ogni prodotto)
+ * OK- Crea una funzione che genera una riga di un singolo prodotto 
+ * OK- Crea una funzione che visualizza l'intera tabella dei prodotti (che richiama la funzione precedente per ogni prodotto)
  * - Crea una funzione che fa il toggle della sezione dei dettagli (mostra/nascondi)
  * - Aggiungi un event listener a ogni riga della tabella per mostrare i dettagli del prodotto cliccato (usa la funzione di toggle)
  * - Aggiungi un event listener al pulsante "Chiudi" per nascondere la sezione dei dettagli (richiama la stessa funzione di toggle)
@@ -22,12 +22,14 @@
  */
 
 let URL_BASE = "http://192.168.1.131:5000/api/products";
+let modale = document.getElementById("modale");
 let nomeProdotto = document.getElementById("prdottoNome");
 let immagine = document.getElementById("prodottoImmagine");
 let descrizione = document.getElementById("prodottoDescrizione");
-let prezzo = document.getElementById("prodottoDescrizione");
-let disponibilità = document.getElementById("prodottoDescrizione");
-let tabella = document.getElementById("tabellaProdotti")
+let prezzo = document.getElementById("prodottoPrezzo");
+let disponibilità = document.getElementById("prodottoDisponibilita");
+let tabella = document.getElementById("tabellaProdotti");
+let btnChiudi =document.getElementById("chiudi");
 
 function handleError(message) {
     tabella.innerHTML = '';
@@ -64,14 +66,12 @@ async function creaRigheProdotti(prodotti) {
             let cellaNome = document.createElement("td");
             cellaNome.textContent = prodotto.nome;
 
-            //let cellaDescrizione = document.createElement("td");
-            //cellaDescrizione.textContent = prodotto.descrizione;
-
             let cellaPrezzo = document.createElement("td");
             cellaPrezzo.textContent = prodotto.prezzo;
 
             let cellaDisponibilita = document.createElement("td");
-            cellaDisponibilita.textContent = prodotto.disponibilita
+            cellaDisponibilita.textContent = prodotto.disponibilita;
+            
             if(prodotto.disponibilita === true){
                 cellaDisponibilita.textContent = "✅"
             }
@@ -81,21 +81,38 @@ async function creaRigheProdotti(prodotti) {
 
             rigaProdotto.appendChild(cellaImmagine);
             rigaProdotto.appendChild(cellaNome);
-            //rigaProdotto.appendChild(cellaDescrizione);
             rigaProdotto.appendChild(cellaPrezzo);
             rigaProdotto.appendChild(cellaDisponibilita);
 
             tabella.appendChild(rigaProdotto);
+
+            rigaProdotto.addEventListener("click", () => popolaModale(prodotto));
+
         }
     } catch { handleError("errore") }
 }
 
 creaRigheProdotti()
 
-function mostraProdotti(prodotti) {
+function popolaModale(prodotto) {
+    
+    modale.classList.remove("nascosto");
 
+    immagine.src = prodotto.immagine;
+    nomeProdotto.textContent = prodotto.nome;
+    descrizione.textContent = prodotto.descrizione;
+    prezzo.textContent = prodotto.prezzo;
+    disponibilità.textContent = prodotto.disponibilita;
+    if(prodotto.disponibilita === true){
+        disponibilità.textContent = "✅"
+    }
+    else{
+        disponibilità.textContent = "❌"
+    }
 }
 
-function toggleModal() {
-
+function chiudiModale(){
+    modale.classList.add("nascosto");
 }
+
+btnChiudi.addEventListener("click", chiudiModale);
