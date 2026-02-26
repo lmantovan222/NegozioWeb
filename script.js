@@ -29,7 +29,8 @@ let descrizione = document.getElementById("prodottoDescrizione");
 let prezzo = document.getElementById("prodottoPrezzo");
 let disponibilità = document.getElementById("prodottoDisponibilita");
 let tabella = document.getElementById("tabellaProdotti");
-let btnChiudi =document.getElementById("chiudi");
+let btnChiudi = document.getElementById("chiudi");
+let listaProdotti = [];
 
 function handleError(message) {
     tabella.innerHTML = '';
@@ -45,6 +46,45 @@ function handleError(message) {
     console.error('Errore:', message);
 }
 
+function visualizzaProdotti(prodotti) {
+
+    for (let prodotto of prodotti) {
+
+        let rigaProdotto = document.createElement("tr");
+
+        let cellaImmagine = document.createElement("td");
+        let immagine = document.createElement("img");
+        immagine.src = prodotto.immagine;
+        cellaImmagine.appendChild(immagine);
+
+        let cellaNome = document.createElement("td");
+        cellaNome.textContent = prodotto.nome;
+
+        let cellaPrezzo = document.createElement("td");
+        cellaPrezzo.textContent = prodotto.prezzo;
+
+        let cellaDisponibilita = document.createElement("td");
+        cellaDisponibilita.textContent = prodotto.disponibilita;
+
+        if (prodotto.disponibilita === true) {
+            cellaDisponibilita.textContent = "✅"
+        }
+        else {
+            cellaDisponibilita.textContent = "❌"
+        }
+
+        rigaProdotto.appendChild(cellaImmagine);
+        rigaProdotto.appendChild(cellaNome);
+        rigaProdotto.appendChild(cellaPrezzo);
+        rigaProdotto.appendChild(cellaDisponibilita);
+
+        tabella.appendChild(rigaProdotto);
+
+        rigaProdotto.addEventListener("click", () => popolaModale(prodotto));
+
+    }
+}
+
 async function creaRigheProdotti(prodotti) {
     try {
         let risposta = await fetch(`${URL_BASE}`);
@@ -52,50 +92,20 @@ async function creaRigheProdotti(prodotti) {
             handleError("errore");
             return;
         }
+        
         let prodotti = await risposta.json();
+        listaProdotti = prodotti;
 
-        for (let prodotto of prodotti) {
+        visualizzaProdotti(prodotti);
 
-            let rigaProdotto = document.createElement("tr");
 
-            let cellaImmagine = document.createElement("td");
-            let immagine = document.createElement("img");
-            immagine.src = prodotto.immagine;
-            cellaImmagine.appendChild(immagine);
-
-            let cellaNome = document.createElement("td");
-            cellaNome.textContent = prodotto.nome;
-
-            let cellaPrezzo = document.createElement("td");
-            cellaPrezzo.textContent = prodotto.prezzo;
-
-            let cellaDisponibilita = document.createElement("td");
-            cellaDisponibilita.textContent = prodotto.disponibilita;
-            
-            if(prodotto.disponibilita === true){
-                cellaDisponibilita.textContent = "✅"
-            }
-            else{
-                cellaDisponibilita.textContent = "❌"
-            }
-
-            rigaProdotto.appendChild(cellaImmagine);
-            rigaProdotto.appendChild(cellaNome);
-            rigaProdotto.appendChild(cellaPrezzo);
-            rigaProdotto.appendChild(cellaDisponibilita);
-
-            tabella.appendChild(rigaProdotto);
-
-            rigaProdotto.addEventListener("click", () => popolaModale(prodotto));
-
-        }
     } catch { handleError("errore") }
 }
 
 creaRigheProdotti()
 
 function popolaModale(prodotto) {
-    
+
     modale.classList.remove("nascosto");
 
     immagine.src = prodotto.immagine;
@@ -103,16 +113,47 @@ function popolaModale(prodotto) {
     descrizione.textContent = prodotto.descrizione;
     prezzo.textContent = prodotto.prezzo;
     disponibilità.textContent = prodotto.disponibilita;
-    if(prodotto.disponibilita === true){
+    if (prodotto.disponibilita === true) {
         disponibilità.textContent = "✅"
     }
-    else{
+    else {
         disponibilità.textContent = "❌"
     }
 }
 
-function chiudiModale(){
+function chiudiModale() {
     modale.classList.add("nascosto");
 }
 
 btnChiudi.addEventListener("click", chiudiModale);
+
+/* Bonus:
+ * - Aggiungi una barra di ricerca per filtrare i prodotti per nome (filtro testuale)
+ * - Aggiungi un filtro per categoria (dropdown) per mostrare solo i prodotti di una certa categoria
+ *
+*/
+
+let container = document.getElementById("corpo");
+let barraRicerca = document.createElement("div");
+barraRicerca.innerHTML = `
+    <div>
+        <input type="text" id="keyword" placeholder="cerca..."></input>
+            <button id="btnSearch">Cerca</button>
+    </div>`;
+container.prepend(barraRicerca);
+
+function ricercaPerNome() {
+    let inputRicerca = document.querySelector("#keyword").value.trim().toLowerCase();
+    tabella.innerHTML = "";
+    listaProdottiFiltrata =[];
+
+    for (let prodotto of listaProdotti) {
+        if (prodotto.nome.toLowerCase().includes(inputRicerca) || prodotto.descrizione.toLowerCase().includes(inputRicerca))
+            listaProdottiFiltrata.push(prodotto);
+    }
+
+    visualizzaProdotti(listaProdottiFiltrata);
+}
+
+let btnSearch = document.querySelector("#btnSearch");
+btnSearch.addEventListener("click", ricercaPerNome)
