@@ -21,7 +21,7 @@
  * - Aggiungi un filtro per categoria (dropdown) per mostrare solo i prodotti di una certa categoria
  */
 
-let URL_BASE = "http://192.168.1.131:5000/api/products";
+let URL_BASE = "http://192.168.1.131:500s0/api/products";
 let modale = document.getElementById("modale");
 let nomeProdotto = document.getElementById("prdottoNome");
 let immagine = document.getElementById("prodottoImmagine");
@@ -128,7 +128,7 @@ function chiudiModale() {
 btnChiudi.addEventListener("click", chiudiModale);
 
 /* Bonus:
- * - Aggiungi una barra di ricerca per filtrare i prodotti per nome (filtro testuale)
+ * OK!- Aggiungi una barra di ricerca per filtrare i prodotti per nome (filtro testuale)
  * - Aggiungi un filtro per categoria (dropdown) per mostrare solo i prodotti di una certa categoria
  *
 */
@@ -142,6 +142,13 @@ barraRicerca.innerHTML = `
     </div>`;
 container.prepend(barraRicerca);
 
+let menuDropdown = document.createElement("div");
+menuDropdown.innerHTML = '<div><select id="filtroCategoria"><option value="Tutte le categorie">Tutte le categorie</option><option value="computers">Computers</option><option value="telefonia">Telefonia</option><option value="accessori">Accessori</option></select></div>';
+container.prepend(menuDropdown);
+
+let filtroCategoria = document.querySelector("#filtroCategoria");
+
+
 function ricercaPerNome() {
     let inputRicerca = document.querySelector("#keyword").value.trim().toLowerCase();
     tabella.innerHTML = "";
@@ -150,6 +157,16 @@ function ricercaPerNome() {
     for (let prodotto of listaProdotti) {
         if (prodotto.nome.toLowerCase().includes(inputRicerca) || prodotto.descrizione.toLowerCase().includes(inputRicerca))
             listaProdottiFiltrata.push(prodotto);
+        filtroCategoria.addEventListener("change",() =>{
+    let categoriaSelezionata = filtroCategoria.value;
+    if(categoriaSelezionata === "tutte le categorie"){
+        visualizzaProdotti(listaProdotti);
+    }
+    else {
+        let prodottiFiltrati = listaProdotti.filter(prodotto => prodotto.categoria === categoriaSelezionata);
+        visualizzaProdotti(prodottiFiltrati);
+    }
+})
     }
 
     visualizzaProdotti(listaProdottiFiltrata);
