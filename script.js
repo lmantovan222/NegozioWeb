@@ -157,16 +157,17 @@ function ricercaPerNome() {
     for (let prodotto of listaProdotti) {
         if (prodotto.nome.toLowerCase().includes(inputRicerca) || prodotto.descrizione.toLowerCase().includes(inputRicerca))
             listaProdottiFiltrata.push(prodotto);
+
         filtroCategoria.addEventListener("change",() =>{
-    let categoriaSelezionata = filtroCategoria.value;
-    if(categoriaSelezionata === "tutte le categorie"){
-        visualizzaProdotti(listaProdotti);
+        let categoriaSelezionata = filtroCategoria.value;
+        if(categoriaSelezionata === "tutte le categorie"){
+        visualizzaProdotti(listaProdottiFiltrata);
     }
     else {
         let prodottiFiltrati = listaProdotti.filter(prodotto => prodotto.categoria === categoriaSelezionata);
         visualizzaProdotti(prodottiFiltrati);
     }
-})
+    })
     }
 
     visualizzaProdotti(listaProdottiFiltrata);
