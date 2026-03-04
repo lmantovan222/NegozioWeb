@@ -21,7 +21,7 @@
  * - Aggiungi un filtro per categoria (dropdown) per mostrare solo i prodotti di una certa categoria
  */
 
-let URL_BASE = "http://192.168.1.131:500s0/api/products";
+let URL_BASE = "http://localhost:3000/api/products";
 let modale = document.getElementById("modale");
 let nomeProdotto = document.getElementById("prdottoNome");
 let immagine = document.getElementById("prodottoImmagine");
@@ -158,16 +158,16 @@ function ricercaPerNome() {
         if (prodotto.nome.toLowerCase().includes(inputRicerca) || prodotto.descrizione.toLowerCase().includes(inputRicerca))
             listaProdottiFiltrata.push(prodotto);
 
-        filtroCategoria.addEventListener("change",() =>{
-        let categoriaSelezionata = filtroCategoria.value;
-        if(categoriaSelezionata === "tutte le categorie"){
-        visualizzaProdotti(listaProdottiFiltrata);
-    }
-    else {
-        let prodottiFiltrati = listaProdotti.filter(prodotto => prodotto.categoria === categoriaSelezionata);
-        visualizzaProdotti(prodottiFiltrati);
-    }
-    })
+//        filtroCategoria.addEventListener("change",() =>{
+//        let categoriaSelezionata = filtroCategoria.value;
+//        if(categoriaSelezionata === "tutte le categorie"){
+//        visualizzaProdotti(listaProdottiFiltrata);
+//   }
+//    else {
+//        let prodottiFiltrati = listaProdotti.filter(prodotto => prodotto.categoria === categoriaSelezionata);
+//       visualizzaProdotti(prodottiFiltrati);
+//    }
+//    })
     }
 
     visualizzaProdotti(listaProdottiFiltrata);
