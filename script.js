@@ -21,7 +21,7 @@
  * - Aggiungi un filtro per categoria (dropdown) per mostrare solo i prodotti di una certa categoria
  */
 
-let URL_BASE = "http://localhost:3000/api/products";
+let URL_BASE = "http://192.168.1.131:5000/api/products";
 let modale = document.getElementById("modale");
 let nomeProdotto = document.getElementById("prdottoNome");
 let immagine = document.getElementById("prodottoImmagine");
@@ -92,7 +92,7 @@ async function creaRigheProdotti(prodotti) {
             handleError("errore");
             return;
         }
-        
+
         let prodotti = await risposta.json();
         listaProdotti = prodotti;
 
@@ -143,7 +143,7 @@ barraRicerca.innerHTML = `
 container.prepend(barraRicerca);
 
 let menuDropdown = document.createElement("div");
-menuDropdown.innerHTML = '<div><select id="filtroCategoria"><option value="Tutte le categorie">Tutte le categorie</option><option value="computers">Computers</option><option value="telefonia">Telefonia</option><option value="accessori">Accessori</option></select></div>';
+menuDropdown.innerHTML = '<div><select id="filtroCategoria"><option value="">Tutte le categorie</option><option value="elettronica">Elettronica</option><option value="audio">Audio</option><option value="accessori">Accessori</option><option value="arredamento">Arredamento</option><option value="illuminazione">Illuminazione</option></select></div>';
 container.prepend(menuDropdown);
 
 let filtroCategoria = document.querySelector("#filtroCategoria");
@@ -151,23 +151,15 @@ let filtroCategoria = document.querySelector("#filtroCategoria");
 
 function ricercaPerNome() {
     let inputRicerca = document.querySelector("#keyword").value.trim().toLowerCase();
+    let inputCategoria = filtroCategoria.value.toLowerCase();
     tabella.innerHTML = "";
-    listaProdottiFiltrata =[];
+    listaProdottiFiltrata = [];
 
     for (let prodotto of listaProdotti) {
-        if (prodotto.nome.toLowerCase().includes(inputRicerca) || prodotto.descrizione.toLowerCase().includes(inputRicerca))
-            listaProdottiFiltrata.push(prodotto);
-
-//        filtroCategoria.addEventListener("change",() =>{
-//        let categoriaSelezionata = filtroCategoria.value;
-//        if(categoriaSelezionata === "tutte le categorie"){
-//        visualizzaProdotti(listaProdottiFiltrata);
-//   }
-//    else {
-//        let prodottiFiltrati = listaProdotti.filter(prodotto => prodotto.categoria === categoriaSelezionata);
-//       visualizzaProdotti(prodottiFiltrati);
-//    }
-//    })
+        if(prodotto.nome.toLowerCase().includes(inputRicerca) || prodotto.descrizione.toLowerCase().includes(inputRicerca))
+            if(prodotto.categoria.toLowerCase().includes(inputCategoria))
+                listaProdottiFiltrata.push(prodotto);
+        
     }
 
     visualizzaProdotti(listaProdottiFiltrata);
